@@ -8,18 +8,17 @@ export class LogParser {
     this.logEntries = [];
   }
 
+  public setLogEntries(logEntries: LogEntry[]): void {
+    this.logEntries = logEntries;
+  }
+
   public readLogFile(logFilePath: string): LogEntry[] {
     const logData = fs.readFileSync(logFilePath, 'utf-8');
     const logLines = logData.split('\n');
 
-    for (const line of logLines) {
-      if (line.trim() !== '') {
-        const logEntry = LogParser.parseLogEntry(line);
-        if (logEntry) {
-          this.logEntries.push(logEntry);
-        }
-      }
-    }
+    this.logEntries = logLines
+      .map((line) => LogParser.parseLogEntry(line))
+      .filter((entry) => entry !== null) as LogEntry[];
 
     return this.logEntries;
   }
@@ -31,23 +30,24 @@ export class LogParser {
   public writeErrorLogs(outputFilePath: string): void {
     const errorLogs = this.filterErrorLogs();
     const errorLogsJson = JSON.stringify(errorLogs, null, 2);
+    console.log("Output File Path:", outputFilePath);
     fs.writeFileSync(outputFilePath, errorLogsJson);
   }
 
   private static parseLogEntry(line: string): LogEntry | null {
     const logEntryRegex = /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - (\w+) - (\w+) - (.*)/;
     const match = line.match(logEntryRegex);
-  
+
     if (!match || match.length < 5) {
       console.error('Error parsing log entry:', line);
       return null;
     }
-  
+
     const timestamp = match[1];
     const logLevel = match[2];
     const transactionId = match[3];
     const jsonData = match[4];
-  
+
     try {
       const { transactionId: transId, err } = JSON.parse(jsonData);
       if (transId !== transactionId || !err) {
@@ -60,6 +60,4 @@ export class LogParser {
       return null;
     }
   }
-  
-  
 }

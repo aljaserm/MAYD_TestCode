@@ -1,0 +1,5 @@
+2023-08-05 12:34:56 - error - tx123 - {"transactionId": "tx123", "err": "Error 1"}
+2023-08-05 13:45:21 - info - tx456 - {"transactionId": "tx456", "err": "Info 2"}
+2023-08-05 14:56:34 - error - tx789 - {"transactionId": "tx789", "err": "Error 3"}
+2023-01-01 00:00:00 - test - tx123 - {"transactionId": "tx123", "err": "Error 1"}
+2023-01-02 00:00:00 - test - tx456 - {"transactionId": "tx456", "err": "Error 2"}
